@@ -21,9 +21,7 @@
 
     var third = function() {
         for (var i = 0; i < NUM; i++) {
-            setTimeout(function() {
-                    console.log(this.val);
-            }.bind({val:i}), TIMEOUT);
+          setTimeout(console.log.bind(null, i), TIMEOUT);
         }
     }
 })();
