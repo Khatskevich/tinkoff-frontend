@@ -4,17 +4,23 @@ var user = {
   name:"Valera",
 }
 
-function getName(){
-  return this.name;
+function getName(word){
+  return this.name + " " + word;
 }
 
-Function.prototype.myBind = function(bObject ){
+Function.prototype.myBind = function(){
   var myBind = this;
-  return function(){
-    bObject.secret = myBind;
-    return bObject.secret();
+  var args = [];
+  var object;
+  object = arguments[0];
+  for( var i = 1; i< arguments.length; i++){
+    args.push(arguments[i]);
   }
+  return function ()
+    {
+      return myBind.apply(object, args);
+    }
 }
 
-console.log(getName.myBind(user)());
+console.log(getName.myBind(user, "Хай")());
 
