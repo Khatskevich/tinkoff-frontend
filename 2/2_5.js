@@ -1,11 +1,11 @@
 "use strict";
 function sum(val){
-  if (val == null){
+  if (val === undefined){
     return val;
   }
   var result = val;
   function recursiveSum(val){
-    if (val == null){
+    if (val === undefined){
       return result;
     }
     result += val;

@@ -8,8 +8,11 @@ function toBinaryString(val){
     }else if (val === 0){
       return currentString;
     }
-    nextSymbol = val % 2 === 1 ? "1" : 0;
-    return recursiveToBinaryString(val >> 1, nextSymbol + currentString)
+    // could be replaced with
+    // if (val <= 1 ) return (val===1? "1" : "") + currentString
+    // it seems ugly!
+    return recursiveToBinaryString(val >> 1 /*parseInt(number / 2)*/,
+        (val % 2 === 1 ? "1" : "0") + currentString)
   }
   if (val === 0){
     return "0";

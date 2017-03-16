@@ -3,10 +3,10 @@
 function getOverlap(a, b){
   var result = [];
   var tempObject = {}
-  a.map(function(x){
+  a.forEach(function(x){
     tempObject[x]=1;
   })
-  b.map(function(x){
+  b.forEach(function(x){
     if (tempObject[x]){
       result.push(x);
     }

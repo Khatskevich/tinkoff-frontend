@@ -10,12 +10,8 @@ function getName(word){
 
 Function.prototype.myBind = function(){
   var myBind = this;
-  var args = [];
-  var object;
-  object = arguments[0];
-  for( var i = 1; i< arguments.length; i++){
-    args.push(arguments[i]);
-  }
+  var args = [].slice.call(arguments);
+  var object = args.shift();
   return function ()
     {
       return myBind.apply(object, args);
@@ -23,4 +19,5 @@ Function.prototype.myBind = function(){
 }
 
 console.log(getName.myBind(user, "Хай")());
+console.log(getName.bind(user, "Хай")());
 
