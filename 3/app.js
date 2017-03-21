@@ -27,6 +27,12 @@ var todoList = [
     }
 ];
 
+var filterStates = {
+    "all":"all",
+    "done":"done",
+    "todo":"todo"
+};
+
 // функция по генерации элементов
 function addTodoFromTemplate(todo) {
     var newElement = templateContainer.querySelector('.task').cloneNode(true);
@@ -54,6 +60,8 @@ function onListClick(event) {
         element = target.parentNode;
         deleteTodo(element);
     }
+    updateStatistics();
+    filterTasks();
 }
 
 function isStatusBtn(target) {
@@ -92,6 +100,8 @@ function onInputKeydown(event) {
     var todo = createNewTodo(todoName);
     insertTodoElement(addTodoFromTemplate(todo));
     inputElement.value = '';
+    updateStatistics();
+    filterTasks();
 }
 
 function checkIfTodoAlreadyExists(todoName) {
@@ -112,6 +122,7 @@ function createNewTodo(name) {
 todoList
     .map(addTodoFromTemplate)
     .forEach(insertTodoElement);
+updateStatistics();
 
 listElement.addEventListener('click', onListClick);
 
@@ -129,3 +140,62 @@ function insertTodoElement(elem) {
         listElement.appendChild(elem);
     }
 }
+
+function updateStatistics(){
+    var tasks_count_all = document.querySelectorAll(".task").length;
+    var tasks_count_done = document.querySelectorAll(".task.task_done").length;
+    var statisticTotalNode = document.querySelector(".statistic__total");
+    var statisticDoneNode = document.querySelector(".statistic__done");
+    var statisticLeftNode = document.querySelector(".statistic__left");
+    statisticTotalNode.textContent = tasks_count_all;
+    statisticDoneNode.textContent = tasks_count_done;
+    statisticLeftNode.textContent = tasks_count_all - tasks_count_done;
+}
+
+
+function onFiltorClick(event){
+    var filter = event.target;
+    var new_filter_name = filter.getAttribute("data-filter");
+    var new_filter_state = filterStates[new_filter_name];
+    if (new_filter_state === undefined){
+        return;
+    }
+    markSelectedFilter(new_filter_name);
+    filterTasks();
+}
+
+function markSelectedFilter(new_filter_state) {
+    var filters = document.querySelectorAll(".filters__item");
+    filters.forEach(function (filter) {
+        filter.classList.toggle("filters__item_selected", filter.getAttribute("data-filter") === new_filter_state);
+    })
+}
+function filterTasks(){
+    var filter = document.querySelector(".filters__item_selected");
+    var filter_state = filterStates[filter.getAttribute("data-filter")];
+    switch (filter_state){
+        case "all":
+            addClassHiddenToTasks(function (task) {
+                return false;
+            });
+            break;
+        case "done":
+            addClassHiddenToTasks(function (task) {
+                return task.classList.contains("task_todo");
+            });
+            break;
+        case "todo":
+            addClassHiddenToTasks(function (task) {
+                return task.classList.contains("task_done");
+            });
+            break;
+    }
+}
+
+function addClassHiddenToTasks(condition){
+    var tasks = document.querySelectorAll(".task");
+    tasks.forEach(function (task) {
+        task.classList.toggle('hidden', condition(task));
+    });
+}
+document.querySelector(".filters").addEventListener("click", onFiltorClick);
