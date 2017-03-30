@@ -135,8 +135,15 @@ body {
     color: lightgrey;
 }
 
+.task__edit_time {
+    display: inline-block;
+    font-size: 10px;
+    font-style: italic;
+    width: 50px;
+}
+
 .task__name {
-    display: block;
+    display: inline-block;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;

@@ -20,19 +20,23 @@ var templateContainer = 'content' in templateElement ? templateElement.content :
 var todoList = [
     {
         name: 'Позвонить в сервис',
-        status: 'todo'
+        status: 'todo',
+        edit_time: getCurretntTimeString()
     },
     {
         name: 'Купить хлеб',
-        status: 'done'
+        status: 'done',
+        edit_time: getCurretntTimeString()
     },
     {
         name: 'Захватить мир',
-        status: 'todo'
+        status: 'todo',
+        edit_time: getCurretntTimeString()
     },
     {
         name: 'Добавить тудушку в список',
-        status: 'todo'
+        status: 'todo',
+        edit_time: getCurretntTimeString()
     }
 ];
 
@@ -40,6 +44,7 @@ var todoList = [
 function addTodoFromTemplate(todo) {
     var newElement = templateContainer.querySelector('.task').cloneNode(true);
     newElement.querySelector('.task__name').textContent = todo.name;
+    newElement.querySelector('.task__edit_time').textContent = todo.edit_time;
     setTodoStatusClassName(newElement, todo.status === 'todo');
 
     return newElement;
@@ -57,6 +62,7 @@ function onListClick(event) {
     if (isStatusBtn(target)) {
         element = target.parentNode;
         changeTodoStatus(element);
+        changeEditTime(element);
     }
 
     if (isDeleteBtn(target)) {
@@ -81,10 +87,19 @@ function checkIfTodoAlreadyExists(todoName) {
     return namesList.indexOf(todoName) > -1;
 }
 
+function getCurretntTimeString(){
+    var d = new Date;
+    return [
+        [d.getHours(), d.getMinutes(), d.getSeconds()].join(':')+' '+
+        d.getMonth()+1, d.getDate(), d.getFullYear()%100].join('/');
+}
+
 function createNewTodo(name) {
+
     return {
         name: name,
-        status: 'todo'
+        status: 'todo',
+        edit_time: getCurretntTimeString()
     }
 }
 
@@ -347,6 +362,11 @@ function changeTodoStatus(element) {
     // и поменять статистику
     myStats.changeStats(!isTodo);
 }
+
+function changeEditTime(element) {
+    element.querySelector('.task__edit_time').textContent = getCurretntTimeString()
+}
+
 
 // аналогично при удалении — нужно удалять из todoList
 /**
