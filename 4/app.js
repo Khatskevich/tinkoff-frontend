@@ -21,22 +21,22 @@ var todoList = [
     {
         name: 'Позвонить в сервис',
         status: 'todo',
-        edit_time: getCurretntTimeString()
+        edit_time: new Date
     },
     {
         name: 'Купить хлеб',
         status: 'done',
-        edit_time: getCurretntTimeString()
+        edit_time: new Date
     },
     {
         name: 'Захватить мир',
         status: 'todo',
-        edit_time: getCurretntTimeString()
+        edit_time: new Date
     },
     {
         name: 'Добавить тудушку в список',
         status: 'todo',
-        edit_time: getCurretntTimeString()
+        edit_time: new Date
     }
 ];
 
@@ -44,7 +44,7 @@ var todoList = [
 function addTodoFromTemplate(todo) {
     var newElement = templateContainer.querySelector('.task').cloneNode(true);
     newElement.querySelector('.task__name').textContent = todo.name;
-    newElement.querySelector('.task__edit_time').textContent = todo.edit_time;
+    newElement.querySelector('.task__edit_time').textContent = getTimeString(todo.edit_time);
     setTodoStatusClassName(newElement, todo.status === 'todo');
 
     return newElement;
@@ -87,11 +87,19 @@ function checkIfTodoAlreadyExists(todoName) {
     return namesList.indexOf(todoName) > -1;
 }
 
-function getCurretntTimeString(){
-    var d = new Date;
-    return [
-        [d.getHours(), d.getMinutes(), d.getSeconds()].join(':')+' '+
-        d.getMonth()+1, d.getDate(), d.getFullYear()%100].join('/');
+
+function addLeadingZeroes(num, zeroes){
+    var temp = '0000000000000' + num;
+    return temp.slice(-zeroes);
+}
+
+function getTimeString(d){
+    return [addLeadingZeroes(d.getHours(),2),
+            addLeadingZeroes(d.getMinutes(),2),
+            addLeadingZeroes(d.getSeconds(),2)].join(':')+' '+
+        [addLeadingZeroes(d.getMonth()+1,2),
+            addLeadingZeroes(d.getDate(),2),
+            addLeadingZeroes(d.getFullYear()%100,2)].join('/');
 }
 
 function createNewTodo(name) {
@@ -99,7 +107,7 @@ function createNewTodo(name) {
     return {
         name: name,
         status: 'todo',
-        edit_time: getCurretntTimeString()
+        edit_time: new Date
     }
 }
 
@@ -123,59 +131,59 @@ function Statistic(done, todo, statsElement){
     this.statsTotalElement = statsElement.querySelector('.statistic__total');
     this.done = done;
     this.todo = todo;
-    // создадим функции работы со статистикой
-    /**
-     * отрисовывает статистику в DOM
-     */
-    this.renderStats = function (){
-        this.statsDonelElement.textContent = this.done;
-        this.statsTodoElement.textContent = this.todo;
-        this.statsTotalElement.textContent = this.done + this.todo;
-    };
-
-    // теперь на каждое из действий — обновление статистики
-    /**
-     * добавляет значение к статистике и обновляет DOM
-     * @param {boolean} isTodo — статус новой тудушки
-     */
-     this.addToStats = function(isTodo) {
-        if (isTodo) {
-            this.todo++;
-        } else {
-            this.done++;
-        }
-        this.renderStats();
-    };
-
-    /**
-     * измененяет статус тудушки и обновляет DOM
-     * @param {boolean} isTodo статус после изменения
-     */
-     this.changeStats = function(isTodo) {
-        if (isTodo) {
-            this.todo++;
-            this.done--;
-        } else {
-            this.todo--;
-            this.done++;
-        }
-        this.renderStats();
-    };
-
-    /**
-     * отрабатывает удаление тудушки и обновляет DOM
-     * @param {boolean} isTodo статус удаленной тудушки
-     */
-     this.deleteFromStats = function(isTodo) {
-        if (isTodo) {
-            this.todo--;
-        } else {
-            this.done--;
-        }
-        this.renderStats();
-    };
     this.renderStats();
 }
+// создадим функции работы со статистикой
+/**
+ * отрисовывает статистику в DOM
+ */
+Statistic.prototype.renderStats = function (){
+    this.statsDonelElement.textContent = this.done;
+    this.statsTodoElement.textContent = this.todo;
+    this.statsTotalElement.textContent = this.done + this.todo;
+};
+
+// теперь на каждое из действий — обновление статистики
+/**
+ * добавляет значение к статистике и обновляет DOM
+ * @param {boolean} isTodo — статус новой тудушки
+ */
+Statistic.prototype.addToStats = function(isTodo) {
+    if (isTodo) {
+        this.todo++;
+    } else {
+        this.done++;
+    }
+    this.renderStats();
+};
+
+/**
+ * измененяет статус тудушки и обновляет DOM
+ * @param {boolean} isTodo статус после изменения
+ */
+Statistic.prototype.changeStats = function(isTodo) {
+    if (isTodo) {
+        this.todo++;
+        this.done--;
+    } else {
+        this.todo--;
+        this.done++;
+    }
+    this.renderStats();
+};
+
+/**
+ * отрабатывает удаление тудушки и обновляет DOM
+ * @param {boolean} isTodo статус удаленной тудушки
+ */
+Statistic.prototype.deleteFromStats = function(isTodo) {
+    if (isTodo) {
+        this.todo--;
+    } else {
+        this.done--;
+    }
+    this.renderStats();
+};
 
 /*==================================
  =            ФИЛЬТРАЦИЯ            =
@@ -364,7 +372,7 @@ function changeTodoStatus(element) {
 }
 
 function changeEditTime(element) {
-    element.querySelector('.task__edit_time').textContent = getCurretntTimeString()
+    element.querySelector('.task__edit_time').textContent = getTimeString(new Date)
 }
 
 
